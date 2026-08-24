@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Daily Bible Verse</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Montserrat:wght@400;500&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    background: #e8e1d4;
+}
+
+.verse-card {
+    position: relative;
+    width: 100%;
+    min-height: 500px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    background-size: cover;
+    background-position: center;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(
+            rgba(35, 45, 35, 0.28),
+            rgba(35, 45, 35, 0.48)
+        );
+}
+
+.content {
+    position: relative;
+    z-index: 2;
+    max-width: 850px;
+    padding: 55px 35px;
+}
+
+.label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    opacity: 0.9;
+}
+
+.verse {
+    font-size: clamp(30px, 5vw, 58px);
+    line-height: 1.12;
+    font-weight: 400;
+    margin: 0 0 25px;
+    text-shadow: 0 2px 15px rgba(0,0,0,.35);
+}
+
+.reference {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.date {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    margin-top: 28px;
+    opacity: .75;
+}
+
+@media (max-width: 600px) {
+    .verse-card {
+        min-height: 450px;
+    }
+
+    .content {
+        padding: 40px 25px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="verse-card" id="card">
+
+    <div class="overlay"></div>
+
+    <div class="content">
+
+        <div class="label">Daily Word</div>
+
+        <div class="verse" id="verse">
+            “Be still, and know that I am God.”
+        </div>
+
+        <div class="reference" id="reference">
+            Psalm 46:10
+        </div>
+
+        <div class="date" id="date"></div>
+
+    </div>
+</div>
+
+<script>
+
+/*
+    DAILY BIBLE VERSES
+    The widget chooses a different verse based on the day.
+*/
+
+const verses = [
+
+    {
+        text: "“Be still, and know that I am God.”",
+        reference: "Psalm 46:10"
+    },
+
+    {
+        text: "“The Lord is my shepherd; I shall not want.”",
+        reference: "Psalm 23:1"
+    },
+
+    {
+        text: "“I can do all things through Christ who strengthens me.”",
+        reference: "Philippians 4:13"
+    },
+
+    {
+        text: "“Trust in the Lord with all your heart and lean not on your own understanding.”",
+        reference: "Proverbs 3:5"
+    },
+
+    {
+        text: "“Cast all your anxiety on him because he cares for you.”",
+        reference: "1 Peter 5:7"
+    },
+
+    {
+        text: "“The Lord is my light and my salvation—whom shall I fear?”",
+        reference: "Psalm 27:1"
+    },
+
+    {
+        text: "“For I know the plans I have for you,” declares the Lord.",
+        reference: "Jeremiah 29:11"
+    },
+
+    {
+        text: "“This is the day the Lord has made; let us rejoice and be glad in it.”",
+        reference: "Psalm 118:24"
+    },
+
+    {
+        text: "“The Lord bless you and keep you.”",
+        reference: "Numbers 6:24"
+    },
+
+    {
+        text: "“Let all that you do be done in love.”",
+        reference: "1 Corinthians 16:14"
+    },
+
+    {
+        text: "“My grace is sufficient for you, for my power is made perfect in weakness.”",
+        reference: "2 Corinthians 12:9"
+    },
+
+    {
+        text: "“The Lord is near to all who call on him.”",
+        reference: "Psalm 145:18"
+    },
+
+    {
+        text: "“Commit your way to the Lord; trust in him and he will act.”",
+        reference: "Psalm 37:5"
+    },
+
+    {
+        text: "“He gives strength to the weary and increases the power of the weak.”",
+        reference: "Isaiah 40:29"
+    }
+
+];
+
+
+/*
+    BEAUTIFUL COTTAGE / NATURE PHOTOS
+
+    These rotate automatically with the verses.
+*/
+
+const photos = [
+
+    "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1800&q=85",
+
+    "https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=1800&q=85",
+
+    "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1800&q=85",
+
+    "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1800&q=85",
+
+    "https://images.unsplash.com/photo-1473445361085-b9a07f55608b?auto=format&fit=crop&w=1800&q=85",
+
+    "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1800&q=85",
+
+    "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1800&q=85",
+
+    "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=85",
+
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1800&q=85",
+
+    "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1800&q=85",
+
+    "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=1800&q=85",
+
+    "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1800&q=85",
+
+    "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1800&q=85",
+
+    "https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1800&q=85"
+
+];
+
+
+/*
+    GET TODAY'S DATE
+*/
+
+const today = new Date();
+
+const start = new Date(today.getFullYear(), 0, 0);
+
+const difference = today - start;
+
+const dayOfYear = Math.floor(
+    difference / (1000 * 60 * 60 * 24)
+);
+
+
+/*
+    PICK TODAY'S VERSE + PHOTO
+*/
+
+const index = dayOfYear % verses.length;
+
+const selectedVerse = verses[index];
+
+const selectedPhoto = photos[index];
+
+
+/*
+    DISPLAY THEM
+*/
+
+document.getElementById("verse").textContent =
+    selectedVerse.text;
+
+document.getElementById("reference").textContent =
+    selectedVerse.reference;
+
+document.getElementById("card").style.backgroundImage =
+    `url("${selectedPhoto}")`;
+
+document.getElementById("date").textContent =
+    today.toLocaleDateString(undefined, {
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+    });
+
+</script>
+
+</body>
+</html>
